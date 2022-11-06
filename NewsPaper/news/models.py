@@ -26,6 +26,9 @@ class Author(models.Model):
 class Category(models.Model):
     article_category = models.CharField(max_length=64, unique=True)
 
+    def __str__(self):
+        return f'{self.article_category}'
+
 
 class Post(models.Model):
     post_author = models.ForeignKey(Author, on_delete=models.CASCADE)
@@ -53,6 +56,12 @@ class Post(models.Model):
 
     def preview(self):
         return self.content[:124] + '...'
+
+    def __str__(self):
+        return f'{self.title.title()}: {self.content[:20]}'
+
+    def get_absolute_url(self):
+        return f'/news/{self.id}'
 
 
 class PostCategory(models.Model):
