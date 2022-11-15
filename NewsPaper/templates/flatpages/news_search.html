@@ -1,0 +1,79 @@
+{% extends 'flatpages/default.html' %}
+{% block title %} Найти новость {% endblock title %}
+{% load my_custom_filters %}
+{% block content %}
+<hr>
+<form action="" method="GET">
+    {{ search.form }}
+	<input type="submit" value="Найти">
+</form>
+<h1>Новости</h1>
+<h6>Количество новостей: {{ news_search|length }}</h6>
+<hr>
+<hr>
+{% if search.qs %}
+	<table>
+		<tr>
+			<td>
+				<b>
+					№ поста
+				</b>
+			</td>
+			<td>
+				<b>
+					Заголовок
+				</b>
+			</td>
+			<td>
+				<b>
+					Дата публикации в формате (день.месяц.год)
+				</b>
+			</td>
+			<td>
+				<b>
+					Текст статьи
+				</b>
+			</td>
+		</tr>
+		{% for news in search.qs %}
+		<tr>
+			<td>
+				{{ news.id }}
+			</td>
+			<td>
+				<a href="{% url 'news_details' news.id %}"> {{ news.title|default:"Без заголовка"|truncatewords:4|censor }}
+			</td>
+			<td>
+				{{ news.date_created|default:"Без даты" }}
+			</td>
+			<td>
+				{{ news.content|truncatechars:30|censor }}
+			</td>
+		{% endfor %}
+		</tr>
+	</table>
+{% else %}
+<h2>
+    Новостей нет!
+</h2>
+{% endif %}
+<br>
+{% load my_custom_tags %}
+{% if is_paginated %}
+  {% if page_obj.has_previous %}
+    <a href="?{% param_replace page=1 %}">Первая</a>
+    {% if page_obj.previous_page_number != 1 %}
+      <a href="?{% param_replace page=page_obj.previous_page_number %}">Предыдущая</a>
+    {% endif %}
+  {% endif %}
+  Страница {{ page_obj.number }} из {{ paginator.num_pages }}
+  {% if page_obj.has_next %}
+    {% if page_obj.next_page_number != paginator.num_pages %}
+      <a href="?{% param_replace page=page_obj.next_page_number %}">Следующая</a>
+    {% endif %}
+    <a href="?{% param_replace page=paginator.num_pages %}">Последняя</a>
+  {% endif %}
+  <p>Статьи {{ page_obj.start_index }}—{{ page_obj.end_index }}</p>
+{% endif %}
+
+{% endblock content %}
