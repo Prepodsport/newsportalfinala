@@ -5,9 +5,8 @@
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
         <meta name="description" content="" />
         <meta name="author" content="" />
-        <title>Bare - Start Bootstrap Template</title>
+        <title>{% block title %} {% endblock %}</title>
         <!-- Favicon-->
-
         <!-- Core theme CSS (includes Bootstrap)-->
         {% load static %}
         <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
@@ -50,6 +49,15 @@
                </li>
                <li class="nav-item">
                    <a class="nav-link" href="/news/">Новости</a>
+               </li>
+               <li class="nav-item">
+                   <a class="nav-link" href="/search/">Поиск</a>
+               </li>
+               <li class="nav-item">
+                   <a class="nav-link" href="/news/create/">Создать новость</a>
+               </li>
+               <li class="nav-item">
+                   <a class="nav-link" href="/articles/create/">Создать статью</a>
                </li>
            </ul>
        </div>

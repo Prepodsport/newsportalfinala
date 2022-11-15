@@ -1,5 +1,5 @@
 {% extends 'flatpages/default.html' %}
-{% block title %} News details {% endblock title %}
+{% block title %} Детали новости {% endblock title %}
 {% load my_custom_filters %}
 {% block content %}
 <table>
@@ -27,16 +27,16 @@
     </tr>
     <tr>
         <td>
-            {{ post.id }}
+            {{ news.id }}
         </td>
         <td>
-            {{ post.title|default:"Без заголовка"|censor }}
+            {{ news.title|default:"Без заголовка"|censor }}
         </td>
         <td>
-            {{ post.date_created|default:"Без даты" }}
+            {{ news.date_created|default:"Без даты" }}
         </td>
         <td>
-            {{ post.content|censor }}
+            {{ news.content|censor }}
         </td>
     </tr>
 </table>

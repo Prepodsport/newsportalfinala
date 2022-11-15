@@ -1,13 +1,13 @@
 {% extends 'flatpages/default.html' %}
-{% block title %} News {% endblock title %}
+{% block title %} Новости {% endblock title %}
 {% load my_custom_filters %}
 {% block content %}
 
 <h1>Новости</h1>
-<h6>Всего новостей: {{ news|length }}</h6>
+<h6>Всего новостей: {{ newss|length }}</h6>
 <hr>
 <hr>
-{% if news %}
+{% if newss %}
     <table>
         <tr>
             <td>
@@ -31,19 +31,22 @@
                 </b>
             </td>
         </tr>
-        {% for post in news %}
+        {% for news in newss %}
         <tr>
             <td>
-                {{ post.id }}
+                {{ news.id }}
             </td>
             <td>
-                {{ post.title|default:"Без заголовка"|censor }}
+                <a href="{% url 'news_details' news.pk %}">{{ news.title|default:"Без заголовка"|truncatewords:4|censor }}
+                <a href="{% url 'news_update' news.pk %}"><u>Редактировать</u></a>
+                <a href="{% url 'news_delete' news.pk %}"><u> Удалить </u></a>
+
             </td>
             <td>
-                {{ post.date_created|default:"Без даты" }}
+                {{ news.date_created|default:"Без даты" }}
             </td>
             <td>
-                {{ post.content|truncatechars:20|censor }}
+                {{ news.content|truncatechars:50|censor }}
             </td>
         {% endfor %}
         </tr>
@@ -54,4 +57,24 @@
 </h2>
 {% endif %}
 <br>
+{% load my_custom_tags %}
+{% if is_paginated %}
+  {% if page_obj.has_previous %}
+    <a href="?{% param_replace page=1 %}">Первая</a>
+    {% if page_obj.previous_page_number != 1 %}
+      <a href="?{% param_replace page=page_obj.previous_page_number %}">Предыдущая</a>
+    {% endif %}
+  {% endif %}
+
+  Страница {{ page_obj.number }} из {{ paginator.num_pages }}
+
+  {% if page_obj.has_next %}
+    {% if page_obj.next_page_number != paginator.num_pages %}
+      <a href="?{% param_replace page=page_obj.next_page_number %}">Следующая</a>
+    {% endif %}
+    <a href="?{% param_replace page=paginator.num_pages %}">Последняя</a>
+  {% endif %}
+
+  <p>Статьи {{ page_obj.start_index }}—{{ page_obj.end_index }}</p>
+{% endif %}
 {% endblock content %}

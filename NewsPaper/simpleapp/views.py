@@ -1,8 +1,11 @@
 # Импортируем класс, который говорит нам о том,
 # что в этом представлении мы будем выводить список объектов из БД
+from django.urls import reverse_lazy
 from datetime import datetime
-from django.views.generic import ListView, DetailView
+from django.views.generic import (ListView, DetailView, CreateView, UpdateView, DeleteView)
 from .models import Product
+from .forms import ProductForm
+from .filters import ProductFilter
 
 
 class ProductsList(ListView):
@@ -16,6 +19,19 @@ class ProductsList(ListView):
     # Это имя списка, в котором будут лежать все объекты.
     # Его надо указать, чтобы обратиться к списку объектов в html-шаблоне.
     context_object_name = 'products'
+    paginate_by = 2
+
+    def get_queryset(self):
+        # Получаем обычный запрос
+        queryset = super().get_queryset()
+        # Используем наш класс фильтрации.
+        # self.request.GET содержит объект QueryDict, который мы рассматривали
+        # в этом юните ранее.
+        # Сохраняем нашу фильтрацию в объекте класса,
+        # чтобы потом добавить в контекст и использовать в шаблоне.
+        self.filterset = ProductFilter(self.request.GET, queryset)
+        # Возвращаем из функции отфильтрованный список товаров
+        return self.filterset.qs
 
     def get_context_data(self, **kwargs):
         # С помощью super() мы обращаемся к родительским классам
@@ -23,6 +39,8 @@ class ProductsList(ListView):
         # что и были переданы нам.
         # В ответе мы должны получить словарь.
         context = super().get_context_data(**kwargs)
+        # Добавляем в контекст объект фильтрации.
+        context['filterset'] = self.filterset
         # К словарю добавим текущую дату в ключ 'time_now'.
         context['time_now'] = datetime.utcnow()
         # Добавим ещё одну пустую переменную,
@@ -38,3 +56,26 @@ class ProductDetail(DetailView):
     template_name = 'flatpages/product.html'
     # Название объекта, в котором будет выбранный пользователем продукт
     context_object_name = 'product'
+
+
+# Добавляем новое представление для создания товаров.
+class ProductCreate(CreateView):
+    # Указываем нашу разработанную форму
+    form_class = ProductForm
+    # модель товаров
+    model = Product
+    # и новый шаблон, в котором используется форма.
+    template_name = 'flatpages/product_edit.html'
+
+
+class ProductUpdate(UpdateView):
+    form_class = ProductForm
+    model = Product
+    template_name = 'flatpages/product_edit.html'
+
+
+# Представление удаляющее товар.
+class ProductDelete(DeleteView):
+    model = Product
+    template_name = 'flatpages/product_delete.html'
+    success_url = reverse_lazy('product_list')
