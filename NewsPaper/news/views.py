@@ -1,6 +1,6 @@
 from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
 from .models import *
-from datetime import datetime, timezone
+#from datetime import datetime, timezone
 from .search import PostFilter
 from django.core.paginator import Paginator
 from django.shortcuts import render
@@ -9,11 +9,11 @@ from .forms import newsCreateForm, articlesCreateForm
 from django.views import View
 from django.http import HttpResponse
 from django.urls import reverse_lazy
-from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.core.cache import cache
 
 
-class news(ListView):
+class NewsList(ListView):
     model = Post
     ordering = "-date_created"
     template_name = 'flatpages/news.html'
@@ -73,28 +73,30 @@ class PostSearch(ListView):
 
 
 class newsCreate(PermissionRequiredMixin, CreateView):
+    raise_exception = True
     model = Post
     form_class = newsCreateForm
     template_name = 'flatpages/news_create.html'
-    permission_required = ('news.add_post')
+    permission_required = ('news.add_post',)
 
-    def form_valid(self, form):
-        post = form.save(commit=False)
-        post.category = "N"
-        post.post_author = Author.objects.get(author=str(self.request.user.id))
-        return super().form_valid(form)
+    #def form_valid(self, form):
+        #post = form.save(commit=False)
+        #post.category = "N"
+        #post.post_author = Author.objects.get(author=str(self.request.user.id))
+        #return super().form_valid(form)
 
 class articlesCreate(PermissionRequiredMixin, CreateView):
+    raise_exception = True
     model = Post
     form_class = articlesCreateForm
     template_name = 'flatpages/news_create.html'
-    permission_required = ('news.add_post')
+    permission_required = ('news.add_post',)
 
-    def form_valid(self, form):
-        post = form.save(commit=False)
-        post.category = "A"
-        post.post_author = Author.objects.get(author=str(self.request.user.id))
-        return super().form_valid(form)
+    #def form_valid(self, form):
+        #post = form.save(commit=False)
+        #post.category = "A"
+        #post.post_author = Author.objects.get(author=str(self.request.user.id))
+        #return super().form_valid(form)
 #class PostUpdate(UpdateView):
    # template_name = 'flatpages/news_create.html'
    # form_class = PostForm
@@ -104,28 +106,34 @@ class articlesCreate(PermissionRequiredMixin, CreateView):
         #id = self.kwargs.get('pk')
         #return Post.objects.get(pk=id)
 class newsUpdate(PermissionRequiredMixin, UpdateView):
+    raise_exception = True
     model = Post
     form_class = newsCreateForm
     template_name = 'flatpages/news_create.html'
-    permission_required = ('news.change_post')
+    permission_required = ('news.change_post',)
 
 
 class articlesUpdate(PermissionRequiredMixin, UpdateView):
+    raise_exception = True
     model = Post
     form_class = newsCreateForm
     template_name = 'flatpages/news_create.html'
-    permission_required = ('news.change_post')
+    permission_required = ('news.change_post',)
 
 # дженерик для удаления новости
-class newsDelete(DeleteView):
+class newsDelete(PermissionRequiredMixin, DeleteView):
+    raise_exception = True
     model = Post
     template_name = 'flatpages/news_delete.html'
     #form_class = PostForm
     queryset = Post.objects.all()
-    success_url = '/news/'
+    success_url = reverse_lazy ('news_list')
+    permission_required = ('news.delete_post',)
 
-class articlesDelete(DeleteView):
+class articlesDelete(PermissionRequiredMixin, DeleteView):
+    raise_exception = True
     model = Post
     template_name = 'flatpages/news_delete.html'
     queryset = Post.objects.all()
-    success_url = '/news/'
+    success_url = reverse_lazy ('news_list')
+    permission_required = ('news.delete_post',)

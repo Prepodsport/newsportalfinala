@@ -21,8 +21,8 @@ class newsCreateForm(forms.ModelForm):
         fields = [
             'title',
             'content',
-            #'post_author',
-            'post_category',
+            'post_author',
+            #'post_category',
             'check_box',
         ]
 
@@ -36,7 +36,7 @@ class articlesCreateForm(forms.ModelForm):
         fields = [
             'title',
             'content',
-            #'post_author',
-            'post_category',
+            'post_author',
+            #'post_category',
             'check_box',
         ]

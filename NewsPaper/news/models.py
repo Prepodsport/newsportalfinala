@@ -74,7 +74,7 @@ class Post(models.Model):
         return self.content[:124] + '...'
 
     def __str__(self):
-        return f'{self.title.title()}: {self.content[:20]}'
+       return f'{self.title.title()}: {self.content[:20]}'
 
     # def get_absolute_url(self):
     # return f'/news/{self.id}'

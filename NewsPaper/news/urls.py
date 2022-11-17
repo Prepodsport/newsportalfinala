@@ -3,7 +3,7 @@ from .views import *
 from .import views
 
 urlpatterns = [
-   path("news/", (news.as_view()), name='news'),
+   path("news/", (NewsList.as_view()), name='news_list'),
    path('news/<int:pk>', PostDetail.as_view(), name='news_details'),
    path('search/', PostSearch.as_view(), name='news_search'),
    path('news/create/', newsCreate.as_view(), name='news_create'),

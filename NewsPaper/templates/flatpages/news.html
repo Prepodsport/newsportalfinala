@@ -10,46 +10,34 @@
 {% if newss %}
     <table>
         <tr>
-            <td>
-                <b>
-                    № поста
-                </b>
-            </td>
-            <td>
-                <b>
-                    Заголовок
-                </b>
-            </td>
-            <td>
-                <b>
-                    Дата публикации в формате (день.месяц.год)
-                </b>
-            </td>
-            <td>
-                <b>
-                    Первые 20 слов текста статьи
-                </b>
-            </td>
+            <td><b>№ поста</b></td>
+            <td><b>Заголовок</b></td>
+            <td><b>Категория</b></td>
+            <td><b>Дата публикации</b></td>
+            <td><b>Текст статьи</b></td>
+            {% if perms.news.change_post or perms.news.delete_post %}
+            <td><b>Действия</b></td>
+            {% endif %}
         </tr>
         {% for news in newss %}
         <tr>
+            <td>{{ news.id }}</td>
             <td>
-                {{ news.id }}
+                <a href="{% url 'news_details' news.pk %}">{{ news.title|default:"Без заголовка"|censor }}
             </td>
+            <td>{{ news.post_category.all|default:"Без категории" }}</td>
+            <td>{{ news.date_created|default:"Без даты" }}</td>
+            <td>{{ news.content|truncatewords:20|censor }}</td>
             <td>
-                <a href="{% url 'news_details' news.pk %}">{{ news.title|default:"Без заголовка"|truncatewords:4|censor }}
+                {% if perms.news.change_post %}
                 <a href="{% url 'news_update' news.pk %}"><u>Редактировать</u></a>
+                {% endif %}
+                {% if perms.news.delete_post %}
                 <a href="{% url 'news_delete' news.pk %}"><u> Удалить </u></a>
-
-            </td>
-            <td>
-                {{ news.date_created|default:"Без даты" }}
-            </td>
-            <td>
-                {{ news.content|truncatechars:50|censor }}
+                {% endif %}
             </td>
         {% endfor %}
-        </tr>
+        <tr>
     </table>
 {% else %}
 <h2>

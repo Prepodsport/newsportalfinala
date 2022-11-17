@@ -1,11 +1,13 @@
 # Импортируем класс, который говорит нам о том,
 # что в этом представлении мы будем выводить список объектов из БД
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from datetime import datetime
 from django.views.generic import (ListView, DetailView, CreateView, UpdateView, DeleteView)
 from .models import Product
 from .forms import ProductForm
 from .filters import ProductFilter
+from django.contrib.auth.decorators import login_required
 
 
 class ProductsList(ListView):
@@ -59,7 +61,9 @@ class ProductDetail(DetailView):
 
 
 # Добавляем новое представление для создания товаров.
-class ProductCreate(CreateView):
+class ProductCreate(LoginRequiredMixin, CreateView):
+    permission_required = ('simpleapp.add_product',)
+    raise_exception = True
     # Указываем нашу разработанную форму
     form_class = ProductForm
     # модель товаров
@@ -69,6 +73,7 @@ class ProductCreate(CreateView):
 
 
 class ProductUpdate(UpdateView):
+    permission_required = ('simpleapp.add_product',)
     form_class = ProductForm
     model = Product
     template_name = 'flatpages/product_edit.html'
@@ -76,6 +81,7 @@ class ProductUpdate(UpdateView):
 
 # Представление удаляющее товар.
 class ProductDelete(DeleteView):
+    permission_required = ('simpleapp.add_product',)
     model = Product
     template_name = 'flatpages/product_delete.html'
     success_url = reverse_lazy('product_list')
