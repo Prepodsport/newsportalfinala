@@ -1,13 +1,12 @@
-<! -- наследование шаблона default -->
 {% extends 'flatpages/default.html' %}
 
-{% block title %} Создать пост {% endblock title %}
+{% block title %} Создать или отредактировать пост {% endblock title %}
 
 {% block content %}
 <h3>Информация о статье</h3>
 <form method="POST">
     {% csrf_token %}
     {{ form }}
-    <input type="submit" value="Запостить!">
+    <input type="submit" value="Опубликовать!">
 </form>
 {% endblock content %}

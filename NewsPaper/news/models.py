@@ -6,7 +6,7 @@ from django.core.cache import cache
 
 
 class Author(models.Model):
-    user_rate = models.IntegerField(default=0, verbose_name='Рейтинг автора')
+    user_rate = models.BigIntegerField(default=0, verbose_name='Рейтинг автора')
     author = models.OneToOneField(User, on_delete=models.CASCADE, verbose_name='Автор')
 
     def update_rating(self):
@@ -28,24 +28,25 @@ class Author(models.Model):
         return f"{self.author.username}"
 
     class Meta:
-        verbose_name = ("Автор")
-        verbose_name_plural = ("Авторы")
+        verbose_name = "Автор"
+        verbose_name_plural = "Авторы"
 
 
 class Category(models.Model):
     article_category = models.CharField(max_length=64, unique=True, verbose_name='Название категории')
+    subscribers = models.ManyToManyField(User, related_name='categories')
 
     def __str__(self):
         return f'{self.article_category}'
 
     class Meta:
-        verbose_name = ("Категория")
-        verbose_name_plural = ("Категории")
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
 
 
 class Post(models.Model):
     post_author = models.ForeignKey(Author, on_delete=models.CASCADE, verbose_name='Автор')
-    post_category = models.ManyToManyField(Category, verbose_name='Категория поста')
+    post_category = models.ManyToManyField(Category, through='PostCategory', verbose_name='Категория поста')
 
     ARTICLE = 'A'
     NEWS = 'N'
@@ -53,11 +54,11 @@ class Post(models.Model):
         (ARTICLE, 'Статья'),
         (NEWS, 'Новость'),
     ]
-    category = models.CharField(max_length=1, choices=POSITIONS, default=NEWS, verbose_name='Тип поста')
+    category = models.CharField(max_length=2, choices=POSITIONS, default=NEWS, verbose_name='Тип поста')
     date_created = models.DateField(auto_now_add=True, verbose_name='Дата создания поста')
     title = models.CharField(max_length=128, verbose_name='Название поста')
-    content = models.TextField(verbose_name='текст поста')
-    post_rate = models.IntegerField(default=0, verbose_name='Рейтинг поста')
+    content = models.TextField(verbose_name='Текст поста')
+    post_rate = models.SmallIntegerField(default=0, verbose_name='Рейтинг поста')
 
     def __str__(self):
         return f"ID: {self.id}, title: {self.title}, Author: {self.author.author.username}"
@@ -74,7 +75,7 @@ class Post(models.Model):
         return self.content[:124] + '...'
 
     def __str__(self):
-       return f'{self.title.title()}: {self.content[:20]}'
+        return f'{self.title.title()}: {self.content[:20]}'
 
     # def get_absolute_url(self):
     # return f'/news/{self.id}'
@@ -87,20 +88,20 @@ class Post(models.Model):
         cache.delete(f'news-{self.pk}')
 
     class Meta:
-        verbose_name = ("Пост")
-        verbose_name_plural = ("Посты")
+        verbose_name = "Пост"
+        verbose_name_plural = "Посты"
 
 
 class PostCategory(models.Model):
     post_category = models.ForeignKey(Post, on_delete=models.CASCADE, verbose_name='Пост')
-    category_category = models.ManyToManyField(Category, verbose_name='Категория')
+    category_category = models.ForeignKey(Category, on_delete=models.CASCADE, verbose_name='Категория')
 
     def __str__(self):
-        return f"{self.post_category}"
+        return f'{self.post_category.title} | {self.category_category.article_category}'
 
     class Meta:
-        verbose_name = ("Пост с категориями")
-        verbose_name_plural = ("Посты с категориями")
+        verbose_name = "Пост с категориями"
+        verbose_name_plural = "Посты с категориями"
 
 
 class Comment(models.Model):
@@ -122,5 +123,5 @@ class Comment(models.Model):
         return f'ID comment: {self.id}'
 
     class Meta:
-        verbose_name = ("Комментарий")
-        verbose_name_plural = ("Комментарии")
+        verbose_name = "Комментарий"
+        verbose_name_plural = "Комментарии"

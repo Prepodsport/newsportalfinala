@@ -4,14 +4,24 @@
 {% block content %}
 
 <h1>Новости</h1>
-<h6>Всего новостей: {{ newss|length }}</h6>
+<h6>Всего новостей: {{ news_list|length }}</h6>
 <hr>
 <hr>
-{% if newss %}
+  <style>
+   table {
+    width: auto;
+    margin: auto;
+   }
+   td {
+    text-align: center;
+   }
+  </style>
+{% if news_list %}
     <table>
         <tr>
             <td><b>№ поста</b></td>
             <td><b>Заголовок</b></td>
+            <td><b>Автор</b></td>
             <td><b>Категория</b></td>
             <td><b>Дата публикации</b></td>
             <td><b>Текст статьи</b></td>
@@ -19,21 +29,20 @@
             <td><b>Действия</b></td>
             {% endif %}
         </tr>
-        {% for news in newss %}
+        {% for news in news_list %}
         <tr>
             <td>{{ news.id }}</td>
-            <td>
-                <a href="{% url 'news_details' news.pk %}">{{ news.title|default:"Без заголовка"|censor }}
-            </td>
-            <td>{{ news.post_category.all|default:"Без категории" }}</td>
+            <td><a href="{% url 'news_details' news.pk %}">{{ news.title|default:"Без заголовка"|censor }}</td>
+            <td>{{ news.post_author }}</td>
+            <td>{% for category in news.post_category.all %} <a href="{% url 'categories_list' category.pk %}">{{ category }} </a> {% endfor %}</td>
             <td>{{ news.date_created|default:"Без даты" }}</td>
             <td>{{ news.content|truncatewords:20|censor }}</td>
             <td>
                 {% if perms.news.change_post %}
-                <a href="{% url 'news_update' news.pk %}"><u>Редактировать</u></a>
+                    <a href="{% url 'news_update' news.pk %}"><u>Редактировать</u></a>
                 {% endif %}
                 {% if perms.news.delete_post %}
-                <a href="{% url 'news_delete' news.pk %}"><u> Удалить </u></a>
+                    <a href="{% url 'news_delete' news.pk %}"><u> Удалить </u></a>
                 {% endif %}
             </td>
         {% endfor %}

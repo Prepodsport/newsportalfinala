@@ -26,7 +26,7 @@ class CommentInlineAdmin(admin.StackedInline):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ('id', 'title', 'category', 'post_author', 'date_created', 'post_rate')
+    list_display = ('id', 'title', 'category', '__str__', 'post_author', 'date_created', 'post_rate')
     list_display_links = ('id', 'title',)
     list_filter = ('category',)
     search_fields = ('title',)
@@ -38,7 +38,7 @@ class PostAdmin(admin.ModelAdmin):
 
 @admin.register(PostCategory)
 class PostCategoryAdmin(admin.ModelAdmin):
-    list_display = ('id', 'post_category')
+    list_display = ('id', 'post_category', '__str__',)
     list_display_links = ('id', 'post_category',)
 
 

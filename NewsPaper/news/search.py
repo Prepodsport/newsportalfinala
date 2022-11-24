@@ -9,12 +9,12 @@ class PostFilter(FilterSet):
     class Meta:
         model = Post
         fields = {
-             #позже даты создания
+            # позже даты создания
             'date_created': ['gt'],
 
-             #по названию
+            # по названию
             'title': ['icontains'],
 
-             #по автору
+            # по автору
             'post_category': ['exact'],
-            }
+        }

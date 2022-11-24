@@ -1,7 +1,16 @@
 {% extends 'flatpages/default.html' %}
-{% block title %} Детали новости {% endblock title %}
+{% block title %} Детали поста {% endblock title %}
 {% load my_custom_filters %}
 {% block content %}
+  <style>
+   table {
+    width: auto;
+    margin: auto;
+   }
+   td {
+    text-align: center;
+   }
+  </style>
 <table>
     <tr>
         <td>
@@ -16,7 +25,17 @@
         </td>
         <td>
             <b>
-                Дата публикации в формате (день.месяц.год)
+                Автор
+            </b>
+        </td>
+        <td>
+            <b>
+                Категория
+            </b>
+        </td>
+        <td>
+            <b>
+                Дата публикации
             </b>
         </td>
         <td>
@@ -31,6 +50,12 @@
         </td>
         <td>
             {{ news.title|default:"Без заголовка"|censor }}
+        </td>
+        <td>
+            {{ news.post_author }}
+        </td>
+        <td>
+            {% for category in news.post_category.all %} {{ category }} {% endfor %}
         </td>
         <td>
             {{ news.date_created|default:"Без даты" }}

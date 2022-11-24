@@ -12,7 +12,7 @@ from django import forms
 # 'post_category', 'content', 'check_box']
 
 
-class newsCreateForm(forms.ModelForm):
+class NewsCreateForm(forms.ModelForm):
     check_box = BooleanField(label='Поставь галочку')
 
     class Meta:
@@ -21,13 +21,13 @@ class newsCreateForm(forms.ModelForm):
         fields = [
             'title',
             'content',
-            'post_author',
-            #'post_category',
+            #'post_author',
+            'post_category',
             'check_box',
         ]
 
 
-class articlesCreateForm(forms.ModelForm):
+class ArticlesCreateForm(forms.ModelForm):
     check_box = BooleanField(label='Поставь галочку')
 
     class Meta:
@@ -36,7 +36,7 @@ class articlesCreateForm(forms.ModelForm):
         fields = [
             'title',
             'content',
-            'post_author',
-            #'post_category',
+            #'post_author',
+            'post_category',
             'check_box',
         ]

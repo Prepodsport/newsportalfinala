@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+{% extends 'flatpages/default.html' %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block head %} {% endblock %}
+    <title>{% block title %} Категории {% endblock %}</title>
+</head>
+<body>
+{% block content %}
+
+{% if categories_list %}
+    {% for categories in categories_list %}
+
+    <table>
+        <tr>
+            Название категории: <a href="{% url 'categories_list' categories.pk %}">{{categories.article_category}}</a>
+        </tr>
+    </table>
+
+    {% endfor %}
+
+{% else %}
+    <h2>Нет категорий</h2>
+{% endif %}
+
+<div align="center">
+       {% if page_obj.has_previous %}
+       <a href="?page=1">1</a>
+       {% if page_obj.previous_page_number != 1 %}
+           ...
+           <a href="?page={{ page_obj.previous_page_number }}">{{ page_obj.previous_page_number }}</a>
+       {% endif %}
+   {% endif %}
+
+   {# Информация о текущей странице #}
+   {{ page_obj.number }}
+
+   {# Информация о следующих страницах #}
+   {% if page_obj.has_next %}
+       <a href="?page={{ page_obj.next_page_number }}">{{ page_obj.next_page_number }}</a>
+       {% if paginator.num_pages != page_obj.next_page_number %}
+           ...
+           <a href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages }}</a>
+       {% endif %}
+   {% endif %}
+</div>
+
+{% endblock %}
+</body>
+</html>

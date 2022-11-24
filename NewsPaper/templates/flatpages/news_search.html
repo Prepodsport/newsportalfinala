@@ -8,9 +8,18 @@
 	<input type="submit" value="Найти">
 </form>
 <h1>Новости</h1>
-<h6>Количество новостей: {{ news_search|length }}</h6>
+<h6>Количество новостей: {{ object_list|length }}</h6>
 <hr>
 <hr>
+  <style>
+   table {
+    width: auto;
+    margin: auto;
+   }
+   td {
+    text-align: center;
+   }
+  </style>
 {% if search.qs %}
 	<table>
 		<tr>
@@ -24,9 +33,19 @@
 					Заголовок
 				</b>
 			</td>
+        	<td>
+            	<b>
+                	Автор
+            	</b>
+        	</td>
+        	<td>
+            	<b>
+                	Категория
+            </b>
+        	</td>
 			<td>
 				<b>
-					Дата публикации в формате (день.месяц.год)
+					Дата публикации
 				</b>
 			</td>
 			<td>
@@ -43,6 +62,12 @@
 			<td>
 				<a href="{% url 'news_details' news.id %}"> {{ news.title|default:"Без заголовка"|truncatewords:4|censor }}
 			</td>
+			<td>
+            	{{ news.post_author }}
+        	</td>
+        	<td>
+            	{% for category in news.post_category.all %} <a href="{% url 'categories_list' category.pk %}">{{ category }} </a> {% endfor %}
+        	</td>
 			<td>
 				{{ news.date_created|default:"Без даты" }}
 			</td>

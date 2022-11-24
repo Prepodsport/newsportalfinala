@@ -1,10 +1,18 @@
-<! -- наследование шаблона default -->
 {% extends 'flatpages/default.html' %}
 {% block title %} Удалить пост {% endblock title %}
 {% load my_custom_filters %}
 
 {% block content %}
-<h2>Вы действительно хотите удалить данную статью?</h2>
+<h2>Вы действительно хотите удалить данный пост?</h2>
+<style>
+   table {
+    width: auto;
+    margin: auto;
+   }
+   td {
+    text-align: center;
+   }
+</style>
 <table>
     <tr>
         <td>
@@ -17,15 +25,24 @@
                 Заголовок
             </b>
         </td>
-
         <td>
             <b>
-                Дата публикации в формате (день.месяц.год)
+                Автор
             </b>
         </td>
         <td>
             <b>
-                Первые 20 слов текста статьи
+                Категория
+            </b>
+        </td>
+        <td>
+            <b>
+                Дата публикации
+            </b>
+        </td>
+        <td>
+            <b>
+                Текст статьи
             </b>
         </td>
     </tr>
@@ -37,6 +54,12 @@
 
         <td>
             {{ post.title|default:"Без заголовка"|truncatewords:4|censor }}
+        </td>
+        <td>
+            {{ post.post_author }}
+        </td>
+        <td>
+            {% for category in post.post_category.all %} {{ category }} {% endfor %}
         </td>
         <td>
             {{ post.date_created|default:"Без даты" }}
