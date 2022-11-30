@@ -1,0 +1,32 @@
+{% extends 'flatpages/default.html' %}
+
+{% block head %}
+{% if is_your_id == path %}
+{% else %}
+<meta http-equiv="refresh" content="5; url={% url 'account_update' is_your_id %}">
+{% endif %}
+{% endblock %}
+
+{% block content %}
+
+<hr>
+
+{% if is_your_id == path %}
+<form action="" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Сохранить">
+</form>
+{% else %}
+<h2><a href="{% url 'account_update' is_your_id %}">Вы пытаетесь изменить чужой профиль. Нажмите, чтобы вернуть к изменениям своего профиля.
+Или в течение 5 секунд мы сделаем это автоматически</a></h2>
+{% endif %}
+
+<hr>
+
+{% if is_not_author %}
+<h2>Стать автором</h2>
+<button><a href="/account/setauthor/">ДА!</a></button><br><br>
+{% endif %}
+
+{% endblock %}

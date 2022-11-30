@@ -5,8 +5,8 @@ from .views import *
 from .import views
 
 urlpatterns = [
-   path("news/", (NewsList.as_view()), name='news_list'),
-   path('news/<int:pk>', PostDetail.as_view(), name='news_details'),
+   path("news/", cache_page(60)(NewsList.as_view()), name='news_list'),
+   path('news/<int:pk>', cache_page(60*5)(PostDetail.as_view()), name='news_details'),
    path('search/', PostSearch.as_view(), name='news_search'),
    path('news/create/', NewsCreate.as_view(), name='news_create'),
    path("articles/create/", ArticlesCreate.as_view(), name='articles_create'),
@@ -19,5 +19,5 @@ urlpatterns = [
    path("categories/<int:pk>", CategoriesView.as_view(), name='categories_list'),
    path('categories/<int:pk>/subscribe/', add_me_to_category, name='sub_category'),
    path('categories/', cache_page(60 * 5)(CategoryListView.as_view()), name='category_lists'),
-
+   path('', IndexView.as_view())
 ]

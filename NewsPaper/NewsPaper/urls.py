@@ -22,4 +22,6 @@ urlpatterns = [
     path('pages/', include('django.contrib.flatpages.urls')),
     path('products/', include('simpleapp.urls')),
     path('', include('news.urls')),
+    path('', include('accounts.urls')),
+    path('__debug__/', include('debug_toolbar.urls')),
 ]

@@ -17,7 +17,7 @@ class ProductsList(ListView):
     ordering = 'name'
     # Указываем имя шаблона, в котором будут все инструкции о том,
     # как именно пользователю должны быть показаны наши объекты
-    template_name = 'flatpages/products.html'
+    template_name = 'product_pages/products.html'
     # Это имя списка, в котором будут лежать все объекты.
     # Его надо указать, чтобы обратиться к списку объектов в html-шаблоне.
     context_object_name = 'products'
@@ -55,7 +55,7 @@ class ProductDetail(DetailView):
     # Модель всё та же, но мы хотим получать информацию по отдельному товару
     model = Product
     # Используем другой шаблон — product.html
-    template_name = 'flatpages/product.html'
+    template_name = 'product_pages/product.html'
     # Название объекта, в котором будет выбранный пользователем продукт
     context_object_name = 'product'
 
@@ -69,19 +69,19 @@ class ProductCreate(LoginRequiredMixin, CreateView):
     # модель товаров
     model = Product
     # и новый шаблон, в котором используется форма.
-    template_name = 'flatpages/product_edit.html'
+    template_name = 'product_pages/product_edit.html'
 
 
 class ProductUpdate(UpdateView):
     permission_required = ('simpleapp.add_product',)
     form_class = ProductForm
     model = Product
-    template_name = 'flatpages/product_edit.html'
+    template_name = 'product_pages/product_edit.html'
 
 
 # Представление удаляющее товар.
 class ProductDelete(DeleteView):
     permission_required = ('simpleapp.add_product',)
     model = Product
-    template_name = 'flatpages/product_delete.html'
+    template_name = 'product_pages/product_delete.html'
     success_url = reverse_lazy('product_list')

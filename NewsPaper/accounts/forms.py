@@ -25,6 +25,17 @@ class SignUpForm(UserCreationForm):
 class CustomSignupForm(SignupForm):
     def save(self, request):
         user = super().save(request)
-        common_users = Group.objects.get(name="Авторы")
-        user.groups.add(common_users)
+        author_users = Group.objects.get(name="Authors")
+        user.groups.add(author_users)
         return user
+
+
+class UserUpdateForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = [
+            'username',
+            'first_name',
+            'last_name',
+            'email'
+        ]

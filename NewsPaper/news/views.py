@@ -13,12 +13,17 @@ from django.http import HttpResponse
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
 from django.core.cache import cache
+from .tasks import hello, printer
 
-
+class IndexView(View):
+    def get(self, request):
+        hello.delay()
+        printer.delay(10)
+        return HttpResponse('Hello!')
 class NewsList(ListView):
     model = Post
     ordering = "-date_created"
-    template_name = 'flatpages/news.html'
+    template_name = 'news_pages/news.html'
     context_object_name = 'news_list'
     paginate_by = 2
     #form_class = PostForm
@@ -40,7 +45,7 @@ class NewsList(ListView):
 
 class PostDetail(DetailView):
     model = Post
-    template_name = 'flatpages/news_detalis.html'
+    template_name = 'news_pages/news_detalis.html'
     context_object_name = "news"
     #queryset = Post.objects.all()
     def get_object(self, *args, **kwargs):
@@ -58,7 +63,7 @@ class PostDetail(DetailView):
 class PostSearch(ListView):
     model = Post
     ordering = "-date_created"
-    template_name = 'flatpages/news_search.html'
+    template_name = 'news_pages/news_search.html'
     context_object_name = 'news_search'
     paginate_by = 4
     #form_class = PostForm
@@ -78,7 +83,7 @@ class NewsCreate(PermissionRequiredMixin, CreateView):
     raise_exception = True
     model = Post
     form_class = NewsCreateForm
-    template_name = 'flatpages/news_create.html'
+    template_name = 'news_pages/news_create.html'
     permission_required = ('news.add_post',)
 
     def form_valid(self, form):
@@ -92,7 +97,7 @@ class ArticlesCreate(PermissionRequiredMixin, CreateView):
     raise_exception = True
     model = Post
     form_class = ArticlesCreateForm
-    template_name = 'flatpages/news_create.html'
+    template_name = 'news_pages/news_create.html'
     permission_required = ('news.add_post',)
 
     def form_valid(self, form):
@@ -114,7 +119,7 @@ class NewsUpdate(PermissionRequiredMixin, UpdateView):
     raise_exception = True
     model = Post
     form_class = NewsCreateForm
-    template_name = 'flatpages/news_create.html'
+    template_name = 'news_pages/news_create.html'
     permission_required = ('news.change_post',)
 
 
@@ -122,14 +127,14 @@ class ArticlesUpdate(PermissionRequiredMixin, UpdateView):
     raise_exception = True
     model = Post
     form_class = NewsCreateForm
-    template_name = 'flatpages/news_create.html'
+    template_name = 'news_pages/news_create.html'
     permission_required = ('news.change_post',)
 
 # дженерик для удаления новости
 class NewsDelete(PermissionRequiredMixin, DeleteView):
     raise_exception = True
     model = Post
-    template_name = 'flatpages/news_delete.html'
+    template_name = 'news_pages/news_delete.html'
     #form_class = PostForm
     queryset = Post.objects.all()
     success_url = reverse_lazy ('news_list')
@@ -138,7 +143,7 @@ class NewsDelete(PermissionRequiredMixin, DeleteView):
 class ArticlesDelete(PermissionRequiredMixin, DeleteView):
     raise_exception = True
     model = Post
-    template_name = 'flatpages/news_delete.html'
+    template_name = 'news_pages/news_delete.html'
     queryset = Post.objects.all()
     success_url = reverse_lazy ('news_list')
     permission_required = ('news.delete_post',)
@@ -146,7 +151,7 @@ class ArticlesDelete(PermissionRequiredMixin, DeleteView):
 
 class CategoriesView(ListView):
     model = Post
-    template_name = 'flatpages/news_categories_view.html'
+    template_name = 'news_pages/news_categories_view.html'
     context_object_name = "categories_list"
     paginate_by = 10
 
@@ -164,7 +169,7 @@ class CategoriesView(ListView):
 
 class CategoryListView(ListView):
     model = Category
-    template_name = 'flatpages/news_categories_list_view.html'
+    template_name = 'news_pages/news_categories_list_view.html'
     context_object_name = "categories_list"
 
 
@@ -175,4 +180,4 @@ def add_me_to_category(request, pk):
     post_category.subscribers.add(user)
     message = 'Вы успешно подписались на рассылку новостей категории'
     # return redirect('categories_list', category)
-    return render(request,'flatpages/subscribe.html', {'category': post_category, 'message': message})
+    return render(request,'news_pages/subscribe.html', {'category': post_category, 'message': message})

@@ -25,7 +25,7 @@ class Author(models.Model):
         self.save()
 
     def __str__(self):
-        return f"{self.author.username}"
+        return f"{self.author.username.title()}"
 
     class Meta:
         verbose_name = "Автор"
@@ -57,7 +57,7 @@ class Post(models.Model):
     category = models.CharField(max_length=2, choices=POSITIONS, default=NEWS, verbose_name='Тип поста')
     date_created = models.DateField(auto_now_add=True, verbose_name='Дата создания поста')
     title = models.CharField(max_length=128, verbose_name='Название поста')
-    content = models.TextField(verbose_name='Текст поста')
+    content = models.TextField(verbose_name='текст поста')
     post_rate = models.SmallIntegerField(default=0, verbose_name='Рейтинг поста')
 
     def __str__(self):
@@ -109,7 +109,7 @@ class Comment(models.Model):
     comment_user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Автор комментария')
     feedback_text = models.TextField(verbose_name='Текст комментария')
     comment_date_created = models.DateField(auto_now_add=True, verbose_name='Дата создания комментария')
-    comment_rate = models.IntegerField(default=0, verbose_name='Рэйтинг комментария')
+    comment_rate = models.IntegerField(default=0, verbose_name='Рейтинг комментария')
 
     def like(self):
         self.comment_rate += 1

@@ -10,7 +10,6 @@ from django.core.mail import mail_managers, EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 from news.models import Post, Category
-from .models import Post
 
 logger = logging.getLogger(__name__)
 
@@ -20,11 +19,11 @@ def my_job():
     #  Your job processing logic here...
     today = datetime.datetime.now()
     last_week = today - datetime.timedelta(days=7)
-    post = Post.objects.filter(date_created__gte=last_week)
-    categories = set(posts.values_list("post_category__name", flat=True))
-    subscribers = set(Category.objects.filter(name__in=categories).vlues_list('subscribers__email', flat=True))
+    posts = Post.objects.filter(date_created__gte=last_week)
+    categories = set(posts.values_list("post_category__article_category", flat=True))
+    subscribers = set(Category.objects.filter(article_category__in=categories).values_list('subscribers__email', flat=True))
     html_content = render_to_string(
-        'flatpages/week_notify.html',
+        'news_pages/week_notify.html',
         {
             'link': settings.SITE_URL,
             'posts': posts,
